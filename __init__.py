@@ -5,6 +5,7 @@ import os
 import sys
 import threading
 import subprocess
+import datetime
 
 
 def handle_stream(stream, prefix):
@@ -661,6 +662,100 @@ async def fetch_externalmodel_list(request):
     check_model_installed(json_obj)
 
     return web.json_response(json_obj, content_type='application/json')
+
+
+@server.PromptServer.instance.routes.get("/snapshot/getlist")
+async def get_snapshot_list(request):
+    snapshots_directory = os.path.join(os.path.dirname(__file__), 'snapshots')
+    items = [f[:-5] for f in os.listdir(snapshots_directory) if f.endswith('.json')]
+    items.sort()
+    return web.json_response({'items': items}, content_type='application/json')
+
+
+@server.PromptServer.instance.routes.get("/snapshot/remove")
+async def remove_snapshot(request):
+    try:
+        target = request.rel_url.query["target"]
+
+        path = os.path.join(os.path.dirname(__file__), 'snapshots', f"{target}.json")
+        if os.path.exists(path):
+            os.remove(path)
+
+        return web.Response(status=200)
+    except:
+        return web.Response(status=400)
+
+
+def get_current_snapshot():
+    # Get ComfyUI hash
+    repo_path = os.path.dirname(folder_paths.__file__)
+
+    if not os.path.exists(os.path.join(repo_path, '.git')):
+        print(f"ComfyUI update fail: The installed ComfyUI does not have a Git repository.")
+        return web.Response(status=400)
+
+    repo = git.Repo(repo_path)
+    commit_hash = repo.head.commit.hexsha
+
+    git_custom_nodes = {}
+    file_custom_nodes = []
+
+    # Get custom nodes hash
+    for path in os.listdir(custom_nodes_path):
+        fullpath = os.path.join(custom_nodes_path, path)
+
+        if os.path.isdir(fullpath):
+            is_disabled = path.endswith(".disabled")
+
+            try:
+                git_dir = os.path.join(fullpath, '.git')
+
+                if not os.path.exists(git_dir):
+                    continue
+
+                repo = git.Repo(fullpath)
+                commit_hash = repo.head.commit.hexsha
+                url = repo.remotes.origin.url
+                git_custom_nodes[url] = {
+                    'hash': commit_hash,
+                    'disabled': is_disabled
+                }
+
+            except:
+                print(f"Failed to extract snapshots for the custom node '{path}'.")
+
+        elif path.endswith('.py'):
+            is_disabled = path.endswith(".disabled.py")
+            filename = os.path.basename(path)
+            item = {
+                'filename': filename,
+                'disabled': is_disabled
+            }
+
+            file_custom_nodes.append(item)
+
+    return {
+        'comfyui': commit_hash,
+        'git_custom_nodes': git_custom_nodes,
+        'file_custom_nodes': file_custom_nodes,
+    }
+
+
+@server.PromptServer.instance.routes.get("/snapshot/save")
+async def save_snapshot(request):
+    try:
+        now = datetime.datetime.now()
+
+        date_time_format = now.strftime("%Y-%m-%d_%H-%M-%S")
+        file_name = f"snapshot_{date_time_format}"
+
+        path = os.path.join(os.path.dirname(__file__), 'snapshots', f"{file_name}.json")
+        with open(path, "w") as json_file:
+            json.dump(get_current_snapshot(), json_file, indent=4)
+
+        return web.Response(status=200)
+    except:
+        return web.Response(status=400)
 
 
 def unzip_install(files):
