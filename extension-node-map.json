@@ -9,6 +9,15 @@
             "title_aux": "alkemann nodes"
         }
     ],
+    "https://github.com/0xbitches/ComfyUI-LCM": [
+        [
+            "LCM_Sampler",
+            "LCM_img2img_Sampler"
+        ],
+        {
+            "title_aux": "Latent Consistency Model for ComfyUI"
+        }
+    ],
     "https://github.com/AIrjen/OneButtonPrompt": [
         [
             "CreatePromptVariant",
@@ -98,10 +107,13 @@
             "BSZAspectHires",
             "BSZColoredLatentImageXL",
             "BSZCombinedHires",
+            "BSZInjectionKSampler",
             "BSZLatentDebug",
             "BSZLatentFill",
+            "BSZLatentGradient",
             "BSZLatentOffsetXL",
             "BSZLatentRGBAImage",
+            "BSZLatentbuster",
             "BSZPixelbuster",
             "BSZPixelbusterHelp",
             "BSZPrincipledSDXL",
@@ -367,6 +379,23 @@
             "title_aux": "ComfyUI Loopchain"
         }
     ],
+    "https://github.com/Fannovel16/ComfyUI-MotionDiff": [
+        [
+            "EmptyMotionData",
+            "ExportSMPLTo3DSoftware",
+            "MotionCLIPTextEncode",
+            "MotionDataVisualizer",
+            "MotionDiffLoader",
+            "MotionDiffSimpleSampler",
+            "RenderSMPLMesh",
+            "SMPLLoader",
+            "SaveSMPL",
+            "SmplifyMotionData"
+        ],
+        {
+            "title_aux": "ComfyUI MotionDiff"
+        }
+    ],
     "https://github.com/Fannovel16/comfyui_controlnet_aux": [
         [
             "AIO_Preprocessor",
@@ -420,6 +449,7 @@
         [
             "AbsCosWave",
             "AbsSinWave",
+            "BatchGLIGENSchedule",
             "BatchPromptSchedule",
             "BatchPromptScheduleEncodeSDXL",
             "BatchValueSchedule",
@@ -440,14 +470,6 @@
         ],
         {
             "title_aux": "FizzNodes"
-        }
-    ],
-    "https://github.com/GeLi1989/GK-beifen-ComfyUI_roop": [
-        [
-            "roop"
-        ],
-        {
-            "title_aux": "roop nodes for ComfyUI"
         }
     ],
     "https://github.com/Gourieff/comfyui-reactor-node": [
@@ -595,12 +617,10 @@
             "VHS_LoadVideoPath",
             "VHS_MergeImages",
             "VHS_MergeLatents",
-            "VHS_OutVideoInfo",
             "VHS_SelectEveryNthImage",
             "VHS_SelectEveryNthLatent",
             "VHS_SplitImages",
             "VHS_SplitLatents",
-            "VHS_UploadVideo",
             "VHS_VideoCombine"
         ],
         {
@@ -979,8 +999,10 @@
             "CR Color Bars",
             "CR Color Gradient",
             "CR Color Tint",
+            "CR Composite Text",
             "CR Conditioning Input Switch",
             "CR ControlNet Input Switch",
+            "CR Draw Text",
             "CR Float To Integer",
             "CR Float To String",
             "CR Halftone Grid",
@@ -1005,6 +1027,7 @@
             "CR LoRA Stack",
             "CR Load LoRA",
             "CR Load XY Annotation From File",
+            "CR Mask Text",
             "CR Model Input Switch",
             "CR Model Merge Stack",
             "CR Module Input",
@@ -1012,6 +1035,7 @@
             "CR Module Pipe Loader",
             "CR Multi Upscale Stack",
             "CR Multi-ControlNet Stack",
+            "CR Overlay Text",
             "CR Pipe Switch",
             "CR Polygons",
             "CR Process Switch",
@@ -1025,6 +1049,8 @@
             "CR Seed",
             "CR Seed to Int",
             "CR Split String",
+            "CR Starburst Colors",
+            "CR Starburst Lines",
             "CR String To Combo",
             "CR String To Number",
             "CR Style Bars",
@@ -1237,21 +1263,23 @@
     ],
     "https://github.com/THtianhao/ComfyUI-Portrait-Maker": [
         [
-            "BoxCropImage",
-            "ColorTransfer",
-            "ExpandMaskBox",
-            "FaceFusionPM",
-            "FaceSkin",
-            "GetImageInfo",
-            "ImageResizeTarget",
-            "ImageScaleShort",
-            "MaskDilateErode",
-            "MaskMerge2Image",
-            "PortraitEnhancement",
-            "RatioMerge2Image",
-            "ReplaceBoxImg",
-            "RetainFace",
-            "SkinRetouching"
+            "PM_BoxCropImage",
+            "PM_ColorTransfer",
+            "PM_ExpandMaskBox",
+            "PM_FaceFusion",
+            "PM_FaceShapMatch",
+            "PM_FaceSkin",
+            "PM_GetImageInfo",
+            "PM_ImageResizeTarget",
+            "PM_ImageScaleShort",
+            "PM_MakeUpTransfer",
+            "PM_MaskDilateErode",
+            "PM_MaskMerge2Image",
+            "PM_PortraitEnhancement",
+            "PM_RatioMerge2Image",
+            "PM_ReplaceBoxImg",
+            "PM_RetinaFace",
+            "PM_SkinRetouching"
         ],
         {
             "title_aux": "ComfyUI-Portrait-Maker"
@@ -1263,6 +1291,7 @@
             "tri3d-atr-parse-batch",
             "tri3d-extract-hand",
             "tri3d-extract-parts-batch",
+            "tri3d-extract-parts-mask-batch",
             "tri3d-fuzzification",
             "tri3d-position-hands",
             "tri3d-position-parts-batch"
@@ -1728,6 +1757,7 @@
             "GateNormalizedAmplitude",
             "LoadAudio",
             "NormalizeAmplitude",
+            "NormalizedAmplitudeDrivenString",
             "NormalizedAmplitudeToGraph",
             "NormalizedAmplitudeToNumber",
             "TransientAmplitudeBasic"
@@ -1823,7 +1853,6 @@
             "Text Input [Dream]",
             "Triangle Curve [Dream]",
             "Triangle Event Curve [Dream]",
-            "Video Encoder (mpegCoder) [Dream]",
             "WAV Curve [Dream]"
         ],
         {
@@ -1856,6 +1885,14 @@
         ],
         {
             "title_aux": "ComfyUI prompt control"
+        }
+    ],
+    "https://github.com/aszc-dev/ComfyUI-CoreMLSuite": [
+        [
+            "CoreMLUNetLoader"
+        ],
+        {
+            "title_aux": "Core ML Suite for ComfyUI"
         }
     ],
     "https://github.com/avatechai/avatar-graph-comfyui": [
@@ -1904,6 +1941,7 @@
             "Batch Crop Resize Inplace",
             "Batch Load Images",
             "Batch Resize Image for SDXL",
+            "Checkpoint Loader Simple Mikey",
             "Empty Latent Ratio Custom SDXL",
             "Empty Latent Ratio Select SDXL",
             "FileNamePrefix",
@@ -1920,6 +1958,7 @@
             "Mikey Sampler Tiled",
             "Mikey Sampler Tiled Base Only",
             "MikeySamplerTiledAdvanced",
+            "OoobaPrompt",
             "PresetRatioSelector",
             "Prompt With SDXL",
             "Prompt With Style",
@@ -1941,6 +1980,7 @@
             "Text2InputOr3rdOption",
             "TextCombinations",
             "TextCombinations3",
+            "TextPreserve",
             "Upscale Tile Calculator",
             "Wildcard Processor",
             "WildcardAndLoraSyntaxProcessor"
@@ -2204,7 +2244,8 @@
         [
             "DiTCondLabelEmpty",
             "DiTCondLabelSelect",
-            "DitCheckpointLoader"
+            "DitCheckpointLoader",
+            "ExtraVAELoader"
         ],
         {
             "title_aux": "Extra Models for ComfyUI"
@@ -2748,6 +2789,7 @@
             "CLIPSegDetectorProvider",
             "CfgScheduleHookProvider",
             "CombineRegionalPrompts",
+            "CoreMLDetailerHookProvider",
             "DenoiseScheduleHookProvider",
             "DetailerForEach",
             "DetailerForEachDebug",
@@ -2872,7 +2914,8 @@
             "TwoAdvancedSamplersForMask",
             "TwoSamplersForMask",
             "TwoSamplersForMaskUpscalerProvider",
-            "TwoSamplersForMaskUpscalerProviderPipe"
+            "TwoSamplersForMaskUpscalerProviderPipe",
+            "UltralyticsDetectorProvider"
         ],
         {
             "author": "Dr.Lt.Data",
@@ -3316,15 +3359,17 @@
     ],
     "https://github.com/shadowcz007/comfyui-mixlab-nodes": [
         [
+            "ImagesCrop",
             "KandinskyModel",
             "KandinskyModelLoad",
-            "LoadImageFromPath",
+            "LoadImagesFromPath",
             "RandomPrompt",
+            "RunWorkflow",
             "SplitLongMask",
             "TransparentImage"
         ],
         {
-            "title_aux": "comfyui-mixlab-nodes"
+            "title_aux": "comfyui-mixlab-nodes [WIP]"
         }
     ],
     "https://github.com/shiimizu/ComfyUI_smZNodes": [
@@ -3386,6 +3431,7 @@
             "ColorCorrect",
             "DeepDanbooruCaption",
             "DependenciesEdit",
+            "FaceAnalyze",
             "Fooocus_KSampler",
             "Fooocus_KSamplerAdvanced",
             "GetBoolFromJson",
@@ -3619,6 +3665,18 @@
             "title_aux": "Syrian Falcon Nodes"
         }
     ],
+    "https://github.com/taabata/LCM_Inpaint-Outpaint_Comfy": [
+        [
+            "LCMGenerate",
+            "LCMLoader",
+            "LCM_outpaint_prep",
+            "LoadImageNode_LCM",
+            "SaveImage_LCM"
+        ],
+        {
+            "title_aux": "LCM_Inpaint-Outpaint_Comfy"
+        }
+    ],
     "https://github.com/theUpsider/ComfyUI-Logic": [
         [
             "Compare",
@@ -3709,6 +3767,7 @@
             "ESS Number to X",
             "ESS Parameterizer",
             "ESS Parameterizer & Prompts",
+            "ESS Six Float Output",
             "ESS Six Input Random",
             "ESS Six Input Text Switch",
             "ESS Six Integer IO Switch",
