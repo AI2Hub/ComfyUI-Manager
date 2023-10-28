@@ -704,6 +704,9 @@ def checkout_custom_node_hash(git_custom_node_infos):
     processed_git_dir = set()
 
     for path in os.listdir(custom_nodes_path):
+        if path.endswith("ComfyUI-Manager"):
+            continue
+
         fullpath = os.path.join(custom_nodes_path, path)
 
         if os.path.isdir(fullpath):
@@ -752,6 +755,9 @@ def invalidate_custom_node_hash(file_custom_node_infos):
     processed_file = set()
 
     for path in os.listdir(custom_nodes_path):
+        if path.endswith("ComfyUI-Manager"):
+            continue
+
         fullpath = os.path.join(custom_nodes_path, path)
 
         if not os.path.isdir(fullpath) and fullpath.endswith('.py'):
@@ -768,6 +774,9 @@ def invalidate_custom_node_hash(file_custom_node_infos):
 
     # download missing
     for k, v in file_custom_node_infos.items():
+        if k.endswith("ComfyUI-Manager"):
+            continue
+
         if not v['disabled'] and k not in processed_file:
             # TODO: lookup containing extension
             #       install
