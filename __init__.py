@@ -686,103 +686,6 @@ async def remove_snapshot(request):
         return web.Response(status=400)
 
 
-def checkout_comfyui_hash(target_hash):
-    repo_path = os.path.dirname(folder_paths.__file__)
-
-    repo = git.Repo(repo_path)
-    commit_hash = repo.head.commit.hexsha
-
-    if commit_hash != target_hash:
-        try:
-            repo.git.checkout(target_hash)
-            print(f"Checked out the ComfyUI: {target_hash}")
-        except git.GitCommandError as e:
-            print(f"Error checking out the ComfyUI: {str(e)}")
-
-
-def checkout_custom_node_hash(git_custom_node_infos):
-    processed_git_dir = set()
-
-    for path in os.listdir(custom_nodes_path):
-        if path.endswith("ComfyUI-Manager"):
-            continue
-
-        fullpath = os.path.join(custom_nodes_path, path)
-
-        if os.path.isdir(fullpath):
-            is_disabled = path.endswith(".disabled")
-
-            try:
-                git_dir = os.path.join(fullpath, '.git')
-                if git_dir not in git_custom_node_infos:
-                    continue
-
-                need_checkout = False
-                item = git_custom_node_infos[git_dir]
-                if item['disabled'] and is_disabled:
-                    pass
-                elif item['disabled'] and not is_disabled:
-                    # disable
-                    new_path = fullpath + ".disabled"
-                    os.rename(fullpath, new_path)
-                    pass
-                elif not item['disabled'] and is_disabled:
-                    # enable
-                    new_path = fullpath[:-9]
-                    os.rename(fullpath, new_path)
-                    processed_git_dir.add(git_dir)
-                    need_checkout = True
-                else:
-                    processed_git_dir.add(git_dir)
-                    need_checkout = True
-
-                if need_checkout:
-                    repo = git.Repo(fullpath)
-                    commit_hash = repo.head.commit.hexsha
-
-                    if commit_hash != item['hash']:
-                        repo.git.checkout(item['hash'])
-            except Exception as e:
-                print(f"Failed to restore snapshots for the custom node '{path}'.\n{e}")
-
-    # clone missing
-    for k, v in git_custom_node_infos.items():
-        if not v['disabled'] and k not in processed_git_dir:
-            gitclone_install([k])
-
-
-def invalidate_custom_node_hash(file_custom_node_infos):
-    processed_file = set()
-
-    for path in os.listdir(custom_nodes_path):
-        if path.endswith("ComfyUI-Manager"):
-            continue
-
-        fullpath = os.path.join(custom_nodes_path, path)
-
-        if not os.path.isdir(fullpath) and fullpath.endswith('.py'):
-            if path in file_custom_node_infos and file_custom_node_infos[path]['disabled']:
-                new_path = fullpath+'.disabled'
-                os.rename(fullpath, new_path)
-
-        elif not os.path.isdir(fullpath) and fullpath.endswith('.py.disabled'):
-            path = path[:-9]
-            if path in file_custom_node_infos and not file_custom_node_infos[path]['disabled']:
-                new_path = fullpath[:-9]
-                os.rename(fullpath, new_path)
-                processed_file.add(path)
-
-    # download missing
-    for k, v in file_custom_node_infos.items():
-        if k.endswith("ComfyUI-Manager"):
-            continue
-
-        if not v['disabled'] and k not in processed_file:
-            # TODO: lookup containing extension
-            #       install
-            pass
-
-
 @server.PromptServer.instance.routes.get("/snapshot/restore")
 async def remove_snapshot(request):
     try:
@@ -790,16 +693,8 @@ async def remove_snapshot(request):
 
         path = os.path.join(os.path.dirname(__file__), 'snapshots', f"{target}.json")
         if os.path.exists(path):
-            info = json.load(path)
-
-            comfyui_hash = info['comfyui']
-            git_custom_node_infos = info['git_custom_nodes']
-            file_custom_node_infos = info['file_custom_nodes']
-
-            checkout_comfyui_hash(comfyui_hash)
-            checkout_custom_node_hash(git_custom_node_infos)
-            invalidate_custom_node_hash(file_custom_node_infos)
-
+            target_path = os.path.join(startup_script_path, "restore-snapshot.json")
+            os.path.copy(path, target_path)
             return web.Response(status=200)
 
         print(f"Snapshot file not found: `{path}`")
