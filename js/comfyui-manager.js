@@ -413,6 +413,10 @@ class ManagerMenuDialog extends ComfyDialog {
 					]
 				),
 			]);
+
+
+		this.element.style.width = '880px';
+		this.element.style.height = '390px';
 	}
 
 	show() {
