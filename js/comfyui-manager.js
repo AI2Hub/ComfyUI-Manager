@@ -7,6 +7,29 @@ import { SnapshotManager } from "./snapshot.js";
 import { ModelInstaller } from "./model-downloader.js";
 import { manager_instance, setManagerInstance } from  "./common.js";
 
+var style = document.createElement('style');
+style.innerHTML = `
+.cm-menu-container {
+  column-gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cm-menu-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.cm-title {
+	padding: 10px 10px 0 10p;
+	background-color: black;
+	text-align: center;
+	height: 45px;
+}
+`;
+
+document.head.appendChild(style);
+
 var update_comfyui_button = null;
 var fetch_updates_button = null;
 var update_all_button = null;
@@ -178,17 +201,7 @@ async function updateAll(update_check_checkbox) {
 class ManagerMenuDialog extends ComfyDialog {
 	local_mode_checkbox = null;
 
-	createButtons() {
-		this.local_mode_checkbox = $el("input",{type:'checkbox', id:"use_local_db"},[])
-		const checkbox_text = $el("label",{},[" Use local DB"])
-		checkbox_text.style.color = "var(--fg-color)";
-		checkbox_text.style.marginRight = "10px";
-
-		this.update_check_checkbox = $el("input",{type:'checkbox', id:"skip_update_check"},[])
-		const uc_checkbox_text = $el("label",{},[" Skip update check"])
-		uc_checkbox_text.style.color = "var(--fg-color)";
-		this.update_check_checkbox.checked = true;
-
+	createControlsLeft() {
 		update_comfyui_button =
 				$el("button", {
 					type: "button",
@@ -213,7 +226,76 @@ class ManagerMenuDialog extends ComfyDialog {
 						() => updateAll(this.update_check_checkbox)
 				});
 
-        // preview method
+		const res =
+			[
+				$el("button", {
+					type: "button",
+					textContent: "Install Custom Nodes",
+					onclick:
+						() => {
+							if(!CustomNodesInstaller.instance)
+								CustomNodesInstaller.instance = new CustomNodesInstaller(app);
+							CustomNodesInstaller.instance.show(false);
+						}
+				}),
+
+				$el("button", {
+					type: "button",
+					textContent: "Install Missing Custom Nodes",
+					onclick:
+						() => {
+							if(!CustomNodesInstaller.instance)
+								CustomNodesInstaller.instance = new CustomNodesInstaller(app);
+							CustomNodesInstaller.instance.show(true);
+						}
+				}),
+
+				$el("button", {
+					type: "button",
+					textContent: "Install Models",
+					onclick:
+						() => {
+							if(!ModelInstaller.instance)
+								ModelInstaller.instance = new ModelInstaller(app);
+							ModelInstaller.instance.show();
+						}
+				}),
+
+                $el("br", {}, []),
+				update_all_button,
+				update_comfyui_button,
+				fetch_updates_button,
+
+				$el("br", {}, []),
+				$el("button", {
+					type: "button",
+					textContent: "Alternatives of A1111",
+					onclick:
+						() => {
+							if(!AlternativesInstaller.instance)
+								AlternativesInstaller.instance = new AlternativesInstaller(app);
+							AlternativesInstaller.instance.show();
+						}
+				}),
+
+				$el("br", {}, []),
+			];
+
+		return res;
+	}
+
+	createControlsMid() {
+		this.local_mode_checkbox = $el("input",{type:'checkbox', id:"use_local_db"},[])
+		const checkbox_text = $el("label",{},[" Use local DB"])
+		checkbox_text.style.color = "var(--fg-color)";
+		checkbox_text.style.marginRight = "10px";
+
+		this.update_check_checkbox = $el("input",{type:'checkbox', id:"skip_update_check"},[])
+		const uc_checkbox_text = $el("label",{},[" Skip update check"])
+		uc_checkbox_text.style.color = "var(--fg-color)";
+		this.update_check_checkbox.checked = true;
+
+		// preview method
 		let preview_combo = document.createElement("select");
         preview_combo.appendChild($el('option', {value:'auto', text:'Preview method: Auto'}, []));
         preview_combo.appendChild($el('option', {value:'taesd', text:'Preview method: TAESD (slow)'}, []));
@@ -269,75 +351,29 @@ class ManagerMenuDialog extends ComfyDialog {
 			}
         });
 
-		const res =
-			[
-				$el("tr.td", {width:"100%"}, [$el("font", {size:6, color:"white"}, [`ComfyUI Manager Menu`])]),
-				$el("br", {}, []),
-				$el("div", {}, [this.local_mode_checkbox, checkbox_text, this.update_check_checkbox, uc_checkbox_text]),
-				$el("br", {}, []),
-				$el("button", {
-					type: "button",
-					textContent: "Install Custom Nodes",
-					onclick:
-						() => {
-							if(!CustomNodesInstaller.instance)
-								CustomNodesInstaller.instance = new CustomNodesInstaller(app);
-							CustomNodesInstaller.instance.show(false);
-						}
-				}),
+		return [
+			$el("div", {}, [this.local_mode_checkbox, checkbox_text, this.update_check_checkbox, uc_checkbox_text]),
+			$el("br", {}, []),
+			preview_combo,
+			badge_combo,
+			channel_combo,
 
-				$el("button", {
-					type: "button",
-					textContent: "Install Missing Custom Nodes",
-					onclick:
-						() => {
-							if(!CustomNodesInstaller.instance)
-								CustomNodesInstaller.instance = new CustomNodesInstaller(app);
-							CustomNodesInstaller.instance.show(true);
-						}
-				}),
+			$el("br", {}, []),
+			$el("button", {
+				type: "button",
+				textContent: "Snapshot Manager",
+				onclick:
+					() => {
+						if(!SnapshotManager.instance)
+						SnapshotManager.instance = new SnapshotManager(app);
+						SnapshotManager.instance.show();
+					}
+			}),
+		];
+	}
 
-				$el("button", {
-					type: "button",
-					textContent: "Install Models",
-					onclick:
-						() => {
-							if(!ModelInstaller.instance)
-								ModelInstaller.instance = new ModelInstaller(app);
-							ModelInstaller.instance.show();
-						}
-				}),
-
-                $el("br", {}, []),
-				update_all_button,
-				update_comfyui_button,
-				fetch_updates_button,
-
-				$el("br", {}, []),
-				$el("button", {
-					type: "button",
-					textContent: "Alternatives of A1111",
-					onclick:
-						() => {
-							if(!AlternativesInstaller.instance)
-								AlternativesInstaller.instance = new AlternativesInstaller(app);
-							AlternativesInstaller.instance.show();
-						}
-				}),
-
-				$el("br", {}, []),
-				$el("button", {
-					type: "button",
-					textContent: "Snapshot Manager",
-					onclick:
-						() => {
-							if(!SnapshotManager.instance)
-							SnapshotManager.instance = new SnapshotManager(app);
-							SnapshotManager.instance.show();
-						}
-				}),
-
-				$el("br", {}, []),
+	createControlsRight() {
+		return [
 				$el("button", {
 					type: "button",
 					textContent: "ComfyUI Community Manual",
@@ -355,35 +391,27 @@ class ManagerMenuDialog extends ComfyDialog {
 					textContent: "ComfyUI Nodes Info",
 					onclick: () => { window.open("https://ltdrdata.github.io/", "comfyui-node-info"); }
 				}),
-
-                $el("br", {}, []),
-				$el("hr", {width: "100%"}, []),
-				preview_combo,
-				badge_combo,
-				channel_combo,
-				$el("hr", {width: "100%"}, []),
-                $el("br", {}, []),
-
-				$el("button", {
-					type: "button",
-					textContent: "Close",
-					onclick: () => this.close()
-				}),
-				$el("br", {}, []),
-			];
-
-		res[0].style.padding = "10px 10px 0 10px";
-		res[0].style.backgroundColor = "black";
-		res[0].style.textAlign = "center";
-		res[0].style.height = "45px";
-		return res;
+		];
 	}
 
 	constructor() {
 		super();
 		this.element = $el("div.comfy-modal", { parent: document.body },
 			[ $el("div.comfy-modal-content",
-				[...this.createButtons()]),
+					[
+						$el("tr.cm-title", {width:"100%"}, [
+								$el("font", {size:6, color:"white"}, [`ComfyUI Manager Menu`])]
+							),
+						$el("br", {}, []),
+						$el("div.cm-menu-container",
+							[
+								$el("div.cm-menu-column", [...this.createControlsLeft()]),
+								$el("div.cm-menu-column", [...this.createControlsMid()]),
+								$el("div.cm-menu-column", [...this.createControlsRight()])
+							]),
+						$el("button", { type: "button", textContent: "Close", onclick: () => this.close() }),
+					]
+				),
 			]);
 	}
 
